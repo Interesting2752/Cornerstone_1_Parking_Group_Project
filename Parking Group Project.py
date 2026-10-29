@@ -33,7 +33,7 @@ blue_led.freq(1000)
 # ---------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------
-DISTANCE_THRESHOLD_CM = 7   # Alert when an object is closer than this
+DISTANCE_THRESHOLD_CM = 15   # Alert when an object is closer than this
 BUZZ_FREQUENCY = 2000        # Pitch of the buzz in Hz
 BUZZ_VOLUME = 20000          # 0 (silent) to 65535 (loudest)
 BEEP_MODE = True             # True = beep on/off, False = continuous buzz
@@ -171,7 +171,7 @@ while True:
             #utime.sleep(0.1)
         alert_on() # Turn on the alert
         utime.sleep(0.6)
-    elif distance <= DISTANCE_THRESHOLD_CM + 23 and distance > DISTANCE_THRESHOLD_CM + 8: # Time to proceed
+    elif distance <= DISTANCE_THRESHOLD_CM + 20 and distance > DISTANCE_THRESHOLD_CM + 8: # Time to proceed
         set_color (0, 255, 0) # Set light to be green
         utime.sleep(1)
     elif distance <= DISTANCE_THRESHOLD_CM + 8: # Time to slow down
