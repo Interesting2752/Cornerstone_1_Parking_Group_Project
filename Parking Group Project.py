@@ -175,10 +175,10 @@ while True:
         utime.sleep(0.6)
     elif distance <= DISTANCE_THRESHOLD_CM + 20 and distance > DISTANCE_THRESHOLD_CM + 10: # Time to proceed
         set_color (0, 255, 0) # Set light to be green
-        utime.sleep(1)
+        utime.sleep(0.5)
     elif distance <= DISTANCE_THRESHOLD_CM + 10: # Time to slow down
         set_color (238, 100, 10) # Set light to be yellow
-        utime.sleep(1)
+        utime.sleep(0.5)
     else: # System doesn't detect objects ahead
         alert_off()
-        utime.sleep(0.7)
+        utime.sleep(0.5)
