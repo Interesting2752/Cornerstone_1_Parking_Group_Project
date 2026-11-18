@@ -13,12 +13,12 @@ import utime
 # ---------------------------------------------------------------------------
 # Pin setup
 # ---------------------------------------------------------------------------
-trigger_pin = 1 # 28th GP
-echo_pin = 2 # 27th GP
-buzzer_pin = 15 # 15th GP
-red_pin = 22 # 20th GP
-green_pin = 21 # 19th GP
-blue_pin = 20 # 18th GP
+trigger_pin = 1 # 1st GP
+echo_pin = 2 # 2nd GP
+buzzer_pin = 28 # 28th GP
+red_pin = 22 # 22nd GP
+green_pin = 21 # 21st GP
+blue_pin = 20 # 20th GP
 
 trigger = Pin(trigger_pin, Pin.OUT)  # Trigger pin sends pulse of current
 echo = Pin(echo_pin, Pin.IN)         # Echo pin receives reflected pulse
@@ -31,30 +31,27 @@ red_led.freq(1000)
 green_led.freq(1000)
 blue_led.freq(1000)
 
+# ---------------------------------------------------------------------------
+# Note frequencies (only used if PLAY_SONG is True)
+# ---------------------------------------------------------------------------
+Notes = {
+    "Go": 450, "Warning": 680, "Stop": 880, "ERROR": 1300,
+}
+
+# "P" = pause
+Tones = ["ERROR", "Go", "Warning", "Stop"]
+
 
 # ---------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------
 DISTANCE_THRESHOLD_CM = 10   # Alert when an object is closer than this
-BUZZ_FREQUENCY = 2000        # Pitch of the buzz in Hz
-BUZZ_VOLUME = 20000          # 0 (silent) to 65535 (loudest)
+BUZZ_VOLUME = 30000          # 0 (silent) to 65535 (loudest)
 BEEP_MODE = True             # True = beep on/off, False = continuous buzz
-PLAY_SONG = False            # True = play the song instead of buzzing
 
 ALERT_ON_NO_OBJECT = True    # True = beep and flash when no object is detected
-NO_OBJECT_FREQUENCY = 800    # Pitch (Hz) for the "no object" beep
+NO_OBJECT_FREQUENCY = Notes[Tones[0]]    # Pitch (Hz) for the "no object" beep
 NO_OBJECT_BEEP_TIME = 0.3    # Seconds on and off for the "no object" beep
-
-# ---------------------------------------------------------------------------
-# Note frequencies (only used if PLAY_SONG is True)
-# ---------------------------------------------------------------------------
-tones = {
-    "E5": 659, "G5": 784, "A5": 880, "B5": 988,
-}
-
-# "P" = pause
-song = ["E5", "G5", "A5", "P", "E5", "G5", "B5", "A5", "P",
-        "E5", "G5", "A5", "P", "G5", "E5"]
 
 
 # ---------------------------------------------------------------------------
@@ -83,18 +80,32 @@ def set_color(red, green, blue):
 
 def alert_on():
     set_color (255, 0, 0) # Sets light to be red
-    playtone(BUZZ_FREQUENCY)
+    playtone(Notes[Tones[3]])
 
+def alert_medium(): # Warning, slow down on the approach
+    bequiet()
+    set_color (238, 100, 10) # Set light to be yellow
+    playtone(Notes[Tones[2]])
+    utime.sleep(0.1)
+    alert_off()
+
+def alert_proceed(): # Proceed with parking
+    bequiet()
+    set_color (0, 255, 0) # Set light to be green
+    playtone(Notes[Tones[1]])
+    utime.sleep(0.2)
+    alert_off()
 
 def alert_off(): # Turn off the light
-    set_color (0, 0, 0)
     bequiet()
+    set_color (0, 0, 0)
+
 
 
 def no_object_alert():
     """Slower, lower-pitched beep and flash so it sounds different from
     the close-object alert."""
-    led.value(1)
+    set_color (255, 0, 0)
     playtone(NO_OBJECT_FREQUENCY)
     utime.sleep(NO_OBJECT_BEEP_TIME)
     alert_off()
@@ -154,11 +165,7 @@ while True:
 
     if distance is None:
         print("No object detected")
-        #if ALERT_ON_NO_OBJECT:
-            #no_object_alert()
-        #else:
-            #alert_off()
-            #utime.sleep(0.2)
+        no_object_alert()
         continue
 
     print("The distance from object is ", distance, "cm")
@@ -174,11 +181,12 @@ while True:
         alert_on() # Turn on the alert
         utime.sleep(0.6)
     elif distance <= DISTANCE_THRESHOLD_CM + 20 and distance > DISTANCE_THRESHOLD_CM + 10: # Time to proceed
-        set_color (0, 255, 0) # Set light to be green
+        alert_proceed() # Set light to be green
         utime.sleep(0.5)
     elif distance <= DISTANCE_THRESHOLD_CM + 10: # Time to slow down
-        set_color (238, 100, 10) # Set light to be yellow
+        alert_medium() # Set light to be yellow
         utime.sleep(0.5)
     else: # System doesn't detect objects ahead
         alert_off()
         utime.sleep(0.5)
+
