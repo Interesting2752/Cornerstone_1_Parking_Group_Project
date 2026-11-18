@@ -171,13 +171,6 @@ while True:
     print("The distance from object is ", distance, "cm")
 
     if distance < DISTANCE_THRESHOLD_CM: # Time to stop
-        #if PLAY_SONG:
-            #playsong(song)
-        #elif BEEP_MODE:
-            #alert_on()
-            #utime.sleep(0.1)
-            #alert_off()
-            #utime.sleep(0.1)
         alert_on() # Turn on the alert
         utime.sleep(0.6)
     elif distance <= DISTANCE_THRESHOLD_CM + 20 and distance > DISTANCE_THRESHOLD_CM + 10: # Time to proceed
