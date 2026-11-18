@@ -172,14 +172,14 @@ while True:
 
     if distance < DISTANCE_THRESHOLD_CM: # Time to stop
         alert_on() # Turn on the alert
-        utime.sleep(0.6)
+        utime.sleep(0.25)
     elif distance <= DISTANCE_THRESHOLD_CM + 20 and distance > DISTANCE_THRESHOLD_CM + 10: # Time to proceed
         alert_proceed() # Set light to be green
-        utime.sleep(0.5)
+        utime.sleep(0.25)
     elif distance <= DISTANCE_THRESHOLD_CM + 10: # Time to slow down
         alert_medium() # Set light to be yellow
-        utime.sleep(0.5)
+        utime.sleep(0.25)
     else: # System doesn't detect objects ahead
         alert_off()
-        utime.sleep(0.5)
+        utime.sleep(0.25)
 
